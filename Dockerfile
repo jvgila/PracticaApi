@@ -1,4 +1,4 @@
-# Copyright 2016 The Kubernetes Authors.
+# Copyright 2021 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG BASE
-FROM ${BASE}
-ARG ARCH
-ADD bin/pause-linux-${ARCH} /pause
-USER 65535:65535
-ENTRYPOINT ["/pause"]
+# This file create the kube-apiserver image.
+ARG BASEIMAGE
+ARG SETCAP_IMAGE
+
+# we use the hosts platform to apply the capabilities to avoid the need
+# to setup qemu for the builder.
+FROM --platform=linux/$BUILDARCH ${SETCAP_IMAGE}
+ARG BINARY
+COPY ${BINARY} /${BINARY}
+# We apply cap_net_bind_service so that kube-apiserver can be run as
+# non-root and still listen on port less than 1024
+RUN setcap cap_net_bind_service=+ep /${BINARY}
+
+FROM --platform=linux/$TARGETARCH ${BASEIMAGE}
+ARG BINARY
+COPY --from=0 /${BINARY} /usr/local/bin/${BINARY}
