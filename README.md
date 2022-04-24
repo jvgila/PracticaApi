@@ -1,13 +1,9 @@
-# Calico Policy Controller
+# GCE Load-Balancer Controller (GLBC) Cluster Addon
 
-Calico is an implementation of the Kubernetes network policy API.  The provided manifests install:
+This cluster addon is composed of a 404 default backend service and deployment.
+On GCE, this 404 service is used in conjunction with the
+[Ingress-GCE](https://github.com/kubernetes/ingress-gce) controller.
 
-- A DaemonSet which runs Calico on each node in the cluster.
-- A Deployment which installs the Calico Typha agent.
-- A Service for the Calico Typha agent.
-- Horizontal and vertical autoscalers for Calico.
+See the Ingress-GCE docs for more information.
 
-### Learn More
-
-Learn more about Calico at https://docs.projectcalico.org
 
