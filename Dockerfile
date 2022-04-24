@@ -12,19 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This file create the kube-apiserver image.
+# Dockerfile used for the server images.
+
 ARG BASEIMAGE
-ARG SETCAP_IMAGE
-
-# we use the hosts platform to apply the capabilities to avoid the need
-# to setup qemu for the builder.
-FROM --platform=linux/$BUILDARCH ${SETCAP_IMAGE}
 ARG BINARY
-COPY ${BINARY} /${BINARY}
-# We apply cap_net_bind_service so that kube-apiserver can be run as
-# non-root and still listen on port less than 1024
-RUN setcap cap_net_bind_service=+ep /${BINARY}
 
-FROM --platform=linux/$TARGETARCH ${BASEIMAGE}
-ARG BINARY
-COPY --from=0 /${BINARY} /usr/local/bin/${BINARY}
+
+FROM "${BASEIMAGE}"
+COPY ${BINARY} /usr/local/bin/${BINARY}
