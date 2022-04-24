@@ -1,17 +1,9 @@
 # See the OWNERS docs at https://go.k8s.io/owners
 
-reviewers:
-  - alisondy
-  - cblecker
-  - guineveresaenger
-  - mrbobbytables
-  - nikhita
-  - parispittman
 approvers:
-  - sig-contributor-experience-approvers
-  - parispittman
-emeritus_approvers:
-  - castrojo
-  - Phillels
+  - build-image-approvers
+reviewers:
+  - build-image-reviewers
 labels:
-  - sig/contributor-experience
+  - sig/release
+  - area/release-eng
