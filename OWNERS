@@ -1,10 +1,13 @@
-approvers:
-  - bowei
-  - mrhohn
-  - freehan
-reviewers:
-  - bowei
-  - mrhohn
-  - freehan
+# See the OWNERS docs at https://go.k8s.io/owners
+
+approvers: []
+reviewers: []
 emeritus_approvers:
-  - rramkumar1
+  - bryk
+  - danielromlein
+  - ianlewis
+  - jeefy
+  - rf232
+  - floreks
+  - maciaszczykm
+  - shu-mutou

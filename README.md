@@ -1,9 +1,7 @@
-# GCE Load-Balancer Controller (GLBC) Cluster Addon
+# Kubernetes Dashboard
 
-This cluster addon is composed of a 404 default backend service and deployment.
-On GCE, this 404 service is used in conjunction with the
-[Ingress-GCE](https://github.com/kubernetes/ingress-gce) controller.
+Kubernetes Dashboard is a general purpose, web-based UI for Kubernetes clusters.
+It allows users to manage applications running in the cluster, troubleshoot them,
+as well as manage the cluster itself.
 
-See the Ingress-GCE docs for more information.
-
-
+Learn more at: https://github.com/kubernetes/dashboard
