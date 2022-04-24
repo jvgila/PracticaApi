@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-# Copyright 2014 The Kubernetes Authors.
+# Copyright 2017 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,32 +13,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Build a Kubernetes release.  This will build the binaries, create the Docker
-# images and other build artifacts.
-#
-# For pushing these artifacts publicly to Google Cloud Storage or to a registry
-# please refer to the kubernetes/release repo at
-# https://github.com/kubernetes/release.
-
 set -o errexit
 set -o nounset
 set -o pipefail
 
+# Complete the release with the standard env
 KUBE_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
-source "${KUBE_ROOT}/build/common.sh"
-source "${KUBE_ROOT}/build/lib/release.sh"
 
-KUBE_RELEASE_RUN_TESTS=${KUBE_RELEASE_RUN_TESTS-y}
-
-kube::build::verify_prereqs
-kube::build::build_image
-kube::build::run_build_command make cross
-
-if [[ $KUBE_RELEASE_RUN_TESTS =~ ^[yY]$ ]]; then
-  kube::build::run_build_command make test
-  kube::build::run_build_command make test-integration
+# Check and error if not "in-a-container"
+if [[ ! -f /.dockerenv ]]; then
+  echo
+  echo "'make release-in-a-container' can only be used from a docker container."
+  echo
+  exit 1
 fi
 
-kube::build::copy_output
+# Other dependencies: Your container should contain docker
+if ! type -p docker >/dev/null 2>&1; then
+  echo
+  echo "'make release-in-a-container' requires a container with" \
+       "docker installed."
+  echo
+  exit 1
+fi
 
-kube::release::package_tarballs
+
+# First run make cross-in-a-container
+make cross-in-a-container
+
+# at the moment only make test is supported.
+if [[ $KUBE_RELEASE_RUN_TESTS =~ ^[yY]$ ]]; then
+  make test
+fi
+
+"${KUBE_ROOT}/build/package-tarballs.sh"

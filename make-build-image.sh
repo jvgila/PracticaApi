@@ -14,32 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Build a Kubernetes release.  This will build the binaries, create the Docker
-# images and other build artifacts.
+# Build the docker image necessary for building Kubernetes
 #
-# For pushing these artifacts publicly to Google Cloud Storage or to a registry
-# please refer to the kubernetes/release repo at
-# https://github.com/kubernetes/release.
-
+# This script will package the parts of the repo that we need to build
+# Kubernetes into a tar file and put it in the right place in the output
+# directory.  It will then copy over the Dockerfile and build the kube-build
+# image.
 set -o errexit
 set -o nounset
 set -o pipefail
 
-KUBE_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+KUBE_ROOT="$(dirname "${BASH_SOURCE[0]}")/.."
 source "${KUBE_ROOT}/build/common.sh"
-source "${KUBE_ROOT}/build/lib/release.sh"
-
-KUBE_RELEASE_RUN_TESTS=${KUBE_RELEASE_RUN_TESTS-y}
 
 kube::build::verify_prereqs
 kube::build::build_image
-kube::build::run_build_command make cross
-
-if [[ $KUBE_RELEASE_RUN_TESTS =~ ^[yY]$ ]]; then
-  kube::build::run_build_command make test
-  kube::build::run_build_command make test-integration
-fi
-
-kube::build::copy_output
-
-kube::release::package_tarballs
