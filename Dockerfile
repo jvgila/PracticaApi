@@ -1,4 +1,4 @@
-# Copyright 2021 The Kubernetes Authors.
+# Copyright 2016 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Dockerfile used for the server images.
-
 ARG BASEIMAGE
-ARG BINARY
 
+FROM ${BASEIMAGE}
 
-FROM "${BASEIMAGE}"
-COPY ${BINARY} /usr/local/bin/${BINARY}
+RUN clean-install bash
+
+ADD kube-addons.sh /opt/
+ADD kube-addons-main.sh /opt/
+ADD kubectl /usr/local/bin/
+
+CMD ["/opt/kube-addons-main.sh"]
